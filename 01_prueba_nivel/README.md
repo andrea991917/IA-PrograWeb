@@ -6,7 +6,7 @@ El enunciado está dividido en cuatro partes. Estas partes están dispuestas en 
 
 ## Fecha de entrega
 
-El _pull request_ para la entrega del ejercicio debe crearse antes de `2020-09-11T12:00:00.000+02:00`.
+El _pull request_ para la entrega del ejercicio debe crearse antes de `2020-10-11T12:00:00.000+02:00`.
 
 ## Enunciado
 
