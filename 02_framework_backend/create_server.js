@@ -30,7 +30,7 @@ const server = net.createServer((socket) => {
 
     // send response
 
-    const request = {
+    const request = {   //Neto: hacer el request, para eso hay que recibir la data ponerla en un buffer y luego darle el formato.
     method = '...',
     path = '...',
     headers = {
@@ -39,8 +39,11 @@ const server = net.createServer((socket) => {
     body = '...',
     }
 
-    const response = {
-    send: () => { ... }
+    const response = {  //Andréa: vos te encargarás de implementar el metodo send del objeto response, este send recibe
+                        //los parámetros que ves en http_server.js y envía un mensaje en formato http como respuesta.
+    send: () => { ... } // Saro: Después de hacer un response.send se tiene que cerrar la conexión, Saro tienes que investigar
+                        // como cerrar la conexión e impementarlo luego que ya Andréa tenga completado el send lo podrás 
+                        // unir pero ya tiene que estar hecho.
     }
 
     requestHandler(request, response)
