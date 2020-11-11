@@ -8,7 +8,12 @@ const server = net.createServer((socket) => {
   socket.on("data", (data) => {
     buffer.push(data);
     console.log("data received");
+  });    
 
+  socket.on("end", () => {
+    buffer.join();
+    console.log("retrieved all data");
+  });
     // ...
 
     if (!hasAllHeaders) {
@@ -47,12 +52,9 @@ const server = net.createServer((socket) => {
     }
 
     requestHandler(request, response)
-  });
+  }
 
-  socket.on("end", () => {
-    buffer.join();
-    console.log("connection ended");
-  });
+  
 });
 
 
