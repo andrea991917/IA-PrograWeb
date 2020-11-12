@@ -7,9 +7,10 @@ const server = net.createServer((socket) => {
   let buffer = [];
   socket.on("data", (data) => {
     buffer.push(data);
+    console.log(data);
     console.log("data received");
-  });    
-
+  });   
+   
   socket.on("end", () => {
     buffer.join();
     console.log("retrieved all data");
