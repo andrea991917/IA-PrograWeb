@@ -55,13 +55,6 @@ const createServer = (requestHandler) => {
           }
         }
       });
-      console.log("METODO " + request.method);
-      console.log("PATH " + request.path);
-      console.log("HEADERS " + JSON.stringify(request.headers));
-      console.log("BODY " + request.body);
-
-
-
       console.log("data received");
     });
 
