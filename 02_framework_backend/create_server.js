@@ -47,11 +47,29 @@ const createServer = (requestHandler) => {
       }
   
       const response = {  //Andréa: vos te encargarás de implementar el metodo send del objeto response, este send recibe
-                          //los parámetros que ves en http_server.js y envía un mensaje en formato http como respuesta.
-      send: () => { } // Saro: Después de hacer un response.send se tiene que cerrar la conexión, Saro tienes que investigar
-                          // como cerrar la conexión e impementarlo luego que ya Andréa tenga completado el send lo podrás 
-                          // unir pero ya tiene que estar hecho.
-      }
+        //metodo send que recibe los tres parametros del response                  
+        send: (code,headers,body) => { 
+          //Punto 7 = agregamos la longitud de la respuesta
+          headers['Content-Length'] = body.length()
+          //agregamos la fecha de la peticion
+          headers['Date'] = (new Date()).toUTCString()
+    
+        //Escribimos la primera linea indicando que estamos enviando una peticion http con el codigo que manden
+          socket.write(`HTTP/1.1 ${code}\r\n`)
+        //vamos a iterar el objeto header y vamos a escribir en el socket los headers encontrados 
+          for (const property in headers) {
+            socket.write(`${property}: ${object[property]}\r\n`);
+          }
+        //ahora escribimos en la cabecera el contenido del mensaje
+          socket.write(`\r\n${body}\r\n`)
+        }
+    
+        }
+
+        socket.on("end", () => {
+          buffer.join();
+          console.log("connection ended");
+        });
   
       requestHandler(request, response)
     });
