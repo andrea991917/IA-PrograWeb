@@ -11,6 +11,8 @@ const createServer = (requestHandler) => {
       path: '',
       headers: {},
       body: '',
+      hasAllHeaders: false,
+      hasMethodAndPath: false,
       getHeader: (header)=>{
         this.headers[header.toLowerCase()] === undefined ?  null :  this.headers[header.toLowerCase()]
       }
@@ -34,10 +36,10 @@ const createServer = (requestHandler) => {
           //Se dividen por SP para encontrar los valores
           request.method = element.split(' ')[0]
           request.path = element.split(' ')[1]
-          hasMethodAndPath= true;
+          request.hasMethodAndPath= true;
         }
         else if (element === '') { //Detectamos el doble CRLF cuando terminan los headers
-          hasAllHeaders = true
+          request.hasAllHeaders = true
         }
         //Si no tiene todos los headers añade el elemento como header
         else if (!request.hasAllHeaders) {
@@ -86,8 +88,8 @@ const createServer = (requestHandler) => {
     }
 
     const clearRequestData = ()=>{
-      hasMethodAndPath = false;
-      hasAllHeaders = false;
+      request.hasMethodAndPath = false;
+      request.hasAllHeaders = false;
       request.body = '';
     }
 
