@@ -74,21 +74,27 @@ const createServer = (requestHandler) => {
         }
         //ahora escribimos en la cabecera el contenido del mensaje
         socket.write(`\r\n${body}\r\n`)
-      }
-
+      }  
     }
 
     socket.on("end", () => {
-      buffer.join();
+      buffer.join();   
       console.log("connection ended");
     });
 
     requestHandler(request, response)
+
+    //Dejamos de aceptar nuevas conexiones
+    server.close();
+    //Permite salir en caso de que solo haya una conexion activa
+    server.unref();
+    //Nos aseguramos de que se cierren todas las conexiones
+    server.destroy();
   });
 
   return {
     listen: (portNumber) => {
-      // ... ✏️
+      console.log("listening port " + portNumber); 
     }
   };
 };
