@@ -18,25 +18,28 @@ const createServer = (requestHandler) => {
         path: '',
         headers: {},
         body: '',
+        getHeader: (header)=>{
+            return this.headers[header.toLowerCase()]
+        }
       }
 
       //Dividir el string por CRLF
       reqArray = bufferString.split('\r\n');
       let hasAllHeaders = false;
+      let hasMethodAndPath= false;
       reqArray.map((element, index) => {
         let lastIndex = reqArray.length - 1;
-        //Detectamos el doble CRLF cuando terminan los headers
-        if (element === '') {
-          hasAllHeaders = true
-        }
-
         //La primera línea: method SP request-target SP HTTP-version
-        if (index === 0) {
+        if (index === 0 && !hasMethodAndPath) {
           //Se dividen por SP para encontrar los valores
           request.method = element.split(' ')[0]
           request.path = element.split(' ')[1]
+          hasMethodAndPath= true;
         }
-        //Si no tiene todos los headers añade todos los elementos como headers
+        else if (element === '') { //Detectamos el doble CRLF cuando terminan los headers
+          hasAllHeaders = true
+        }
+        //Si no tiene todos los headers añade el elemento como header
         else if (!hasAllHeaders) {
           //Un header está formado por field-name ":" OWS field-value OWS
           const headersSplited = element.split(': ');
@@ -45,9 +48,9 @@ const createServer = (requestHandler) => {
           //lo demás es el valor de esa propiedad
           request.headers[first.toLowerCase()] = rest.join();
         }
-        //Si hay un body y no es el whitespace que queda por el doble CRLF antes del body
-        else if (request.headers["content-length"] != 0 && element !== '') {
-          if (index !== lastIndex) {
+        //Si hay un body y si el body que tenemos es menor que el content length
+        else if (request.headers["content-length"] != 0 && (request.body.length < request.headers["content-length"]) ) {
+          if (((body.length+element.length) < request.headers["content-length"] )) { //esto detecta si no es el ultimo elemento
             //Debido a que el string se separa por CRLF, este elimina los CRLF del body entonces lo añadimos manualmente
             request.body = request.body + element + '\r\n';
           } else {
