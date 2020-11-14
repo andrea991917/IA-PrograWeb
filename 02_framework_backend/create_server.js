@@ -101,6 +101,7 @@ const createServer = (requestHandler) => {
 
   return {
     listen: (portNumber) => {
+      server.listen(portNumber);
       console.log("listening port " + portNumber); 
     }
   };
