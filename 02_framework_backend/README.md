@@ -8,10 +8,10 @@ El _pull request_ para la entrega del ejercicio debe crearse antes de `2020-11-1
 
 ## Enunciado
 
-Modifica únicamente el archivo `create_server.js` para que la función exportada, `createServer`, pueda ser utilizada de la suguiente manera:
+Modifica únicamente el archivo `create_server.js` para que la función exportada, `createServer`, pueda ser utilizada de la siguiente manera:
 
 ```javascript
-// El modulo importado en la suguiente línea es el que debes crear.
+// El modulo importado en la siguiente línea es el que debes crear.
 const createServer = require("./create_server.js");
 
 const get = (request, response) => {
@@ -72,6 +72,9 @@ const server = createServer((request, response) => {
 });
 
 server.listen(8080);
+
+// Después de un tiempo, cuando se desee "apagar" la aplicación:
+server.close();
 ```
 
 Nótese que insertar los _headers_ "Content-Length", "Date", etc. es responsabilidad del framework.

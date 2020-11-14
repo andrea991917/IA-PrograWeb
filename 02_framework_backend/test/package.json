@@ -1,0 +1,15 @@
+{
+  "name": "tests",
+  "version": "1.0.0",
+  "description": "",
+  "main": "client.js",
+  "scripts": {
+    "test": "mocha 'req_*.js'"
+  },
+  "keywords": [],
+  "author": "Gerardo Munguia",
+  "license": "ISC",
+  "dependencies": {
+    "mocha": "^8.2.0"
+  }
+}
