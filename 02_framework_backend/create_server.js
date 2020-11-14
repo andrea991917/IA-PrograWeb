@@ -5,32 +5,32 @@ const createServer = (requestHandler) => {
   const server = net.createServer((socket) => {
     console.log("new connection");
 
+    //Objeto request
+    let request = {
+      method: '',
+      path: '',
+      headers: {},
+      body: '',
+      getHeader: (header)=>{
+        this.headers[header.toLowerCase()] === undefined ?  null :  this.headers[header.toLowerCase()]
+      }
+    }
+
     let buffer = [];
     socket.setEncoding("utf-8");
+    
+    
     socket.on("data", (data) => {
       buffer.push(data);
       console.log(data);
       //Convertir buffer de array a string
       bufferString = buffer.toString();
-      //Objeto request
-      const request = {
-        method: '',
-        path: '',
-        headers: {},
-        body: '',
-        getHeader: (header)=>{
-            return this.headers[header.toLowerCase()]
-        }
-      }
-
+      
       //Dividir el string por CRLF
       reqArray = bufferString.split('\r\n');
-      let hasAllHeaders = false;
-      let hasMethodAndPath= false;
       reqArray.map((element, index) => {
-        let lastIndex = reqArray.length - 1;
         //La primera línea: method SP request-target SP HTTP-version
-        if (index === 0 && !hasMethodAndPath) {
+        if (!request.hasMethodAndPath) {
           //Se dividen por SP para encontrar los valores
           request.method = element.split(' ')[0]
           request.path = element.split(' ')[1]
@@ -40,7 +40,7 @@ const createServer = (requestHandler) => {
           hasAllHeaders = true
         }
         //Si no tiene todos los headers añade el elemento como header
-        else if (!hasAllHeaders) {
+        else if (!request.hasAllHeaders) {
           //Un header está formado por field-name ":" OWS field-value OWS
           const headersSplited = element.split(': ');
           const [first, ...rest] = headersSplited;
@@ -49,8 +49,8 @@ const createServer = (requestHandler) => {
           request.headers[first.toLowerCase()] = rest.join();
         }
         //Si hay un body y si el body que tenemos es menor que el content length
-        else if (request.headers["content-length"] != 0 && (request.body.length < request.headers["content-length"]) ) {
-          if (((body.length+element.length) < request.headers["content-length"] )) { //esto detecta si no es el ultimo elemento
+        else if (request.getHeader("content-length") != 0 && (request.body.length < request.getHeader("content-length")) ) {
+          if (((body.length+element.length) < request.getHeader("content-length"))) { //esto detecta si no es el ultimo elemento
             //Debido a que el string se separa por CRLF, este elimina los CRLF del body entonces lo añadimos manualmente
             request.body = request.body + element + '\r\n';
           } else {
@@ -59,6 +59,11 @@ const createServer = (requestHandler) => {
         }
       });
       console.log("data received");
+      //Detectamos que el mensaje ya este completo para hacer el request handler
+      if(request.body.length === request.getHeader("content-length")) {
+        requestHandler(request, response)
+        clearRequestData();
+      }
     });
 
     const response = { 
@@ -80,19 +85,16 @@ const createServer = (requestHandler) => {
       }  
     }
 
+    const clearRequestData = ()=>{
+      hasMethodAndPath = false;
+      hasAllHeaders = false;
+      request.body = '';
+    }
+
     socket.on("end", () => {
       buffer.join();   
       console.log("connection ended");
     });
-
-    requestHandler(request, response)
-
-    //Dejamos de aceptar nuevas conexiones
-    server.close();
-    //Permite salir en caso de que solo haya una conexion activa
-    server.unref();
-    //Nos aseguramos de que se cierren todas las conexiones
-    server.destroy();
   });
 
   return {
