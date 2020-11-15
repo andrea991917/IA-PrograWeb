@@ -14,7 +14,7 @@ const createServer = (requestHandler) => {
       hasAllHeaders: false,
       hasMethodAndPath: false,
       getHeader: (header)=>{
-        return ((this.headers[header.toLowerCase()] === undefined) ?  null :  this.headers[header.toLowerCase()]);
+        return ((request.headers[header.toLowerCase()] === undefined) ?  null :  request.headers[header.toLowerCase()]);
       }
     }
 
@@ -24,7 +24,6 @@ const createServer = (requestHandler) => {
     
     socket.on("data", (data) => {
       buffer.push(data);
-      
       //Convertir buffer de array a string
       bufferString = buffer.toString();
 
@@ -52,7 +51,7 @@ const createServer = (requestHandler) => {
         }
         //Si hay un body y si el body que tenemos es menor que el content length
         else if (request.getHeader("content-length") != 0 && (request.body.length < request.getHeader("content-length")) ) {
-          if (((body.length+element.length) < request.getHeader("content-length"))) { //esto detecta si no es el ultimo elemento
+          if (((request.body.length+element.length) < request.getHeader("content-length"))) { //esto detecta si no es el ultimo elemento
             //Debido a que el string se separa por CRLF, este elimina los CRLF del body entonces lo añadimos manualmente
             request.body = request.body + element + '\r\n';
           } else {
@@ -62,8 +61,8 @@ const createServer = (requestHandler) => {
       });
 
       //Detectamos que el mensaje ya este completo para hacer el request handler
-      if(!request.getHeader("content-length")|| request.body.length === request.getHeader("content-length")) {
-        console.log("REQUEST HANDLER");
+      if(request.getHeader("content-length") === null|| request.body.length == request.getHeader("content-length")) {
+        console.log("REQUEST HANDLER ", request, response);
         requestHandler(request, response)
         clearRequestData();
       }
