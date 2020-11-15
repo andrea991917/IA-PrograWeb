@@ -59,7 +59,6 @@ const createServer = (requestHandler) => {
           }
         }
       });
-
       //Detectamos que el mensaje ya este completo para hacer el request handler
       if(request.getHeader("content-length") === null|| request.body.length == request.getHeader("content-length")) {
         requestHandler(request, response)
@@ -89,7 +88,7 @@ const createServer = (requestHandler) => {
     const clearRequestData = ()=>{
       request.hasMethodAndPath = false;
       request.hasAllHeaders = false;
-      request.body = '';
+      // request.body = '';
     }
 
     socket.on("end", () => {
