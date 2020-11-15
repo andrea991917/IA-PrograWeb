@@ -14,7 +14,7 @@ const createServer = (requestHandler) => {
       hasAllHeaders: false,
       hasMethodAndPath: false,
       getHeader: (header)=>{
-        return ((this.headers[header.toLowerCase()] === undefined) ?  null :  this.headers[header.toLowerCase()]);
+        return ((request.headers[header.toLowerCase()] === undefined) ?  null :  request.headers[header.toLowerCase()]);
       }
     }
 
@@ -24,7 +24,6 @@ const createServer = (requestHandler) => {
     
     socket.on("data", (data) => {
       buffer.push(data);
-      
       //Convertir buffer de array a string
       bufferString = buffer.toString();
 
@@ -52,7 +51,7 @@ const createServer = (requestHandler) => {
         }
         //Si hay un body y si el body que tenemos es menor que el content length
         else if (request.getHeader("content-length") != 0 && (request.body.length < request.getHeader("content-length")) ) {
-          if (((body.length+element.length) < request.getHeader("content-length"))) { //esto detecta si no es el ultimo elemento
+          if (((request.body.length+element.length) < request.getHeader("content-length"))) { //esto detecta si no es el ultimo elemento
             //Debido a que el string se separa por CRLF, este elimina los CRLF del body entonces lo añadimos manualmente
             request.body = request.body + element + '\r\n';
           } else {
@@ -62,8 +61,7 @@ const createServer = (requestHandler) => {
       });
 
       //Detectamos que el mensaje ya este completo para hacer el request handler
-      if(!request.getHeader("content-length")|| request.body.length === request.getHeader("content-length")) {
-        console.log("REQUEST HANDLER");
+      if(request.getHeader("content-length") === null|| request.body.length == request.getHeader("content-length")) {
         requestHandler(request, response)
         clearRequestData();
       }
@@ -73,15 +71,15 @@ const createServer = (requestHandler) => {
       //metodo send que recibe los tres parametros del response                  
       send: (code, headers, body) => {
         //Punto 7 = agregamos la longitud de la respuesta
-        headers['Content-Length'] = body.length()
+        headers['Content-Length'] = body.length
         //agregamos la fecha de la peticion
         headers['Date'] = (new Date()).toUTCString()
 
         //Escribimos la primera linea indicando que estamos enviando una peticion http con el codigo que manden
         socket.write(`HTTP/1.1 ${code}\r\n`)
         //vamos a iterar el objeto header y vamos a escribir en el socket los headers encontrados 
-        for (const property in headers) {
-          socket.write(`${property}: ${object[property]}\r\n`);
+        for (const [key, value] of Object.entries(headers)) {
+          socket.write(`${key}: ${value}\r\n`);
         }
         //ahora escribimos en la cabecera el contenido del mensaje
         socket.write(`\r\n${body}\r\n`)
