@@ -62,7 +62,6 @@ const createServer = (requestHandler) => {
 
       //Detectamos que el mensaje ya este completo para hacer el request handler
       if(request.getHeader("content-length") === null|| request.body.length == request.getHeader("content-length")) {
-        console.log("REQUEST HANDLER ", request, response);
         requestHandler(request, response)
         clearRequestData();
       }
@@ -72,15 +71,15 @@ const createServer = (requestHandler) => {
       //metodo send que recibe los tres parametros del response                  
       send: (code, headers, body) => {
         //Punto 7 = agregamos la longitud de la respuesta
-        headers['Content-Length'] = body.length()
+        headers['Content-Length'] = body.length
         //agregamos la fecha de la peticion
         headers['Date'] = (new Date()).toUTCString()
 
         //Escribimos la primera linea indicando que estamos enviando una peticion http con el codigo que manden
         socket.write(`HTTP/1.1 ${code}\r\n`)
         //vamos a iterar el objeto header y vamos a escribir en el socket los headers encontrados 
-        for (const property in headers) {
-          socket.write(`${property}: ${object[property]}\r\n`);
+        for (const [key, value] of Object.entries(headers)) {
+          socket.write(`${key}: ${value}\r\n`);
         }
         //ahora escribimos en la cabecera el contenido del mensaje
         socket.write(`\r\n${body}\r\n`)
