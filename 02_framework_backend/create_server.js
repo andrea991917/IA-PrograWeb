@@ -6,15 +6,15 @@ const createServer = (requestHandler) => {
     console.log("new connection");
 
     //Objeto request
-    let request = {
+    var request = {
       method: '',
       path: '',
-      headers: {},
+      headers: new Object(),
       body: '',
       hasAllHeaders: false,
       hasMethodAndPath: false,
       getHeader: (header)=>{
-        this.headers[header.toLowerCase()] === undefined ?  null :  this.headers[header.toLowerCase()]
+        request.headers[header.toLowerCase()] === undefined ?  null :  request.headers[header.toLowerCase()]
       }
     }
 
@@ -24,10 +24,10 @@ const createServer = (requestHandler) => {
     
     socket.on("data", (data) => {
       buffer.push(data);
-      console.log(data);
+      
       //Convertir buffer de array a string
       bufferString = buffer.toString();
-      
+
       //Dividir el string por CRLF
       reqArray = bufferString.split('\r\n');
       reqArray.map((element, index) => {
@@ -60,9 +60,10 @@ const createServer = (requestHandler) => {
           }
         }
       });
-      console.log("data received");
+
       //Detectamos que el mensaje ya este completo para hacer el request handler
-      if(request.body.length === request.getHeader("content-length")) {
+      if(!request.getHeader("content-length")|| request.body.length === request.getHeader("content-length")) {
+        console.log("REQUEST HANDLER");
         requestHandler(request, response)
         clearRequestData();
       }
@@ -103,6 +104,9 @@ const createServer = (requestHandler) => {
     listen: (portNumber) => {
       server.listen(portNumber);
       console.log("listening port " + portNumber); 
+    }, 
+    close: () => {
+      server.close();
     }
   };
 };
