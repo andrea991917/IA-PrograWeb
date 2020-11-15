@@ -27,6 +27,10 @@ const createServer = (requestHandler) => {
       //Convertir buffer de array a string
       bufferString = buffer.toString();
 
+      if(request.hasMethodAndPath && request.hasAllHeaders){
+        request.hasAllHeaders = false
+      }
+
       //Dividir el string por CRLF
       reqArray = bufferString.split('\r\n');
       reqArray.map((element, index) => {
@@ -50,17 +54,13 @@ const createServer = (requestHandler) => {
           request.headers[first.toLowerCase()] = rest.join();
         }
         //Si hay un body y si el body que tenemos es menor que el content length
-        else if (request.getHeader("content-length") != 0 && (request.body.length < request.getHeader("content-length")) ) {
-          if (((request.body.length+element.length) < request.getHeader("content-length"))) { //esto detecta si no es el ultimo elemento
-            //Debido a que el string se separa por CRLF, este elimina los CRLF del body entonces lo añadimos manualmente
-            request.body = request.body + element + '\r\n';
-          } else {
-            request.body = request.body + element
-          }
+        else if (request.hasAllHeaders && request.getHeader("content-length") != 0 && (request.body.length < request.getHeader("content-length")) ) {
+          request.body +=  element;
         }
       });
+
       //Detectamos que el mensaje ya este completo para hacer el request handler
-      if(request.getHeader("content-length") === null|| request.body.length == request.getHeader("content-length")) {
+      if(request.getHeader("content-length") === null|| request.body.length >= request.getHeader("content-length")) {
         requestHandler(request, response)
         clearRequestData();
       }
