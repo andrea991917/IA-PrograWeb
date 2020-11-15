@@ -6,15 +6,15 @@ const createServer = (requestHandler) => {
     console.log("new connection");
 
     //Objeto request
-    let request = {
+    var request = {
       method: '',
       path: '',
-      headers: {},
+      headers: new Object(),
       body: '',
       hasAllHeaders: false,
       hasMethodAndPath: false,
       getHeader: (header)=>{
-        this.headers[header.toLowerCase()] === undefined ?  null :  this.headers[header.toLowerCase()]
+        request.headers[header.toLowerCase()] === undefined ?  null :  request.headers[header.toLowerCase()]
       }
     }
 
@@ -103,6 +103,9 @@ const createServer = (requestHandler) => {
     listen: (portNumber) => {
       server.listen(portNumber);
       console.log("listening port " + portNumber); 
+    }, 
+    close: () => {
+      server.close();
     }
   };
 };
