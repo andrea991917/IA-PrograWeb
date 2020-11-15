@@ -76,7 +76,7 @@ const createServer = (requestHandler) => {
         headers['Date'] = (new Date()).toUTCString()
 
         //Escribimos la primera linea indicando que estamos enviando una peticion http con el codigo que manden
-        socket.write(`HTTP/1.1 ${code}\r\n`)
+        socket.write(`HTTP/1.1 ${code} Message\r\n`)
         //vamos a iterar el objeto header y vamos a escribir en el socket los headers encontrados 
         for (const [key, value] of Object.entries(headers)) {
           socket.write(`${key}: ${value}\r\n`);
