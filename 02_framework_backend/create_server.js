@@ -14,7 +14,7 @@ const createServer = (requestHandler) => {
       hasAllHeaders: false,
       hasMethodAndPath: false,
       getHeader: (header)=>{
-        this.headers[header.toLowerCase()] === undefined ?  null :  this.headers[header.toLowerCase()]
+        return ((this.headers[header.toLowerCase()] === undefined) ?  null :  this.headers[header.toLowerCase()]);
       }
     }
 
