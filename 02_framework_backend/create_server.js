@@ -17,22 +17,20 @@ const createServer = (requestHandler) => {
         return ((request.headers[header.toLowerCase()] === undefined) ?  null :  request.headers[header.toLowerCase()]);
       }
     }
-
     let buffer = [];
     socket.setEncoding("utf-8");
     
-    
     socket.on("data", (data) => {
       buffer.push(data);
+      let bufferString = buffer.join('');
       //Convertir buffer de array a string
-      bufferString = buffer.toString();
 
       if(request.hasMethodAndPath && request.hasAllHeaders){
         request.hasAllHeaders = false
       }
 
       //Dividir el string por CRLF
-      reqArray = bufferString.split('\r\n');
+      let reqArray = bufferString.split('\r\n');
       reqArray.map((element, index) => {
         //La primera línea: method SP request-target SP HTTP-version
         if (!request.hasMethodAndPath) {
@@ -55,17 +53,17 @@ const createServer = (requestHandler) => {
         }
         //Si hay un body y si el body que tenemos es menor que el content length
         else if (request.hasAllHeaders && request.getHeader("content-length") != 0 && (request.body.length < request.getHeader("content-length")) ) {
-          request.body +=  element;
+          request.body =  element;
         }
       });
 
       //Detectamos que el mensaje ya este completo para hacer el request handler
       if(request.getHeader("content-length") === null|| request.body.length >= request.getHeader("content-length")) {
         requestHandler(request, response)
-        clearRequestData();
       }
     });
 
+    //Objeto Response
     const response = { 
       //metodo send que recibe los tres parametros del response                  
       send: (code, headers, body) => {
@@ -85,14 +83,7 @@ const createServer = (requestHandler) => {
       }  
     }
 
-    const clearRequestData = ()=>{
-      request.hasMethodAndPath = false;
-      request.hasAllHeaders = false;
-      // request.body = '';
-    }
-
     socket.on("end", () => {
-      buffer.join();   
       console.log("connection ended");
     });
   });
