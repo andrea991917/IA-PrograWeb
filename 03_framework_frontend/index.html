@@ -45,7 +45,27 @@
 
     <script>
       window.createApp = ({ rootElementId, initialState, handlers }) => {
-        // ... 📝
+        if(initialState.isPageLogIn === false){
+          x = document.querySelector("[fw-if='isPageLogIn']")
+          x.style.display = "none";
+        }
+        if(initialState.isPageMain === false){
+          x = document.querySelector("[fw-if='isPageMain']")
+          x.style.display = "none";
+        }
+        if(initialState.isFormInvalid === false){
+          x = document.querySelector("[fw-if='isFormInvalid']")
+          x.style.display = "none";
+        }
+        if(initialState.isFormInvalid == true){
+          x = document.querySelector("[fw-content='validationMessage']")
+          x.innerHTML = initialState.validationMessage
+        }
+
+        if(initialState.isPageMain == true){
+          x = document.querySelector("[fw-content='username']")
+          x.innerHTML = initialState.username
+        }
       }
     </script>
 
