@@ -74,7 +74,16 @@
       });
     }
 
-
+    //obtenemos el valor del elemento con atributo fw-attr:value y el valor attribute como parametro
+    getAttr = (attribute) => {
+      x = document.querySelectorAll('[fw-attr\\:value=' + attribute + ']')
+      return x.value;
+    }
+    //establecemos el valor del elemento con atributo fw-attr:value y el valor attribute como parametro
+    setAttr = (attribute, value) => {
+      x = document.querySelectorAll('[fw-attr\\:value=' + attribute + ']')
+      x.value = value;
+    }
 
     window.createApp = ({
       rootElementId,
