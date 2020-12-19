@@ -38,6 +38,13 @@
   </div>
 
   <script>
+
+    const availableEvents = ["click", "submit", "input", "close", "change", "abort", "cached",
+      "copy", "cut", "dblclick", "DOMContentLoaded", "drag", "drop", "emptied", "ended", "error",
+      "focus", "focusin", "focusout", "invalid", "keydown", "keypress", "keyup", "load", "message", "open",
+      "paste", "play", "reset", "resize", "scroll", "select", "show", "success", "timeout", "wheel"];
+
+
     //funcion que actualiza los cambios y recibe 3 parametros
     var update = (root, initialState, handlers) => {
       //accedemos a los elementos con fw-if 
@@ -61,11 +68,13 @@
       //iteramos en cada elemento con fw-content
       x.forEach(element => {
         y = element.getAttribute("fw-content")
+
         //ponemos el contenido del elemento
         element.innerHTML = initialState[y]
       });
-
     }
+
+
 
     window.createApp = ({
       rootElementId,
@@ -73,6 +82,29 @@
       handlers
     }) => {
       update(rootElementId, initialState, handlers);
+      updateEvents = () => {
+        //accedemos a los elementos con fw-on más los eventos disponibles del array
+
+        availableEvents.forEach(event => {
+          x = document.querySelectorAll("[fw-on\\:" + event + "]");
+          //iteramos en cada elemento con fw-on
+          x.forEach(element => {
+
+            //Declaramos una función processEvent para el event handler en lugar de utilizar una 
+            //función anónima ya que utiliza menos memoria al no quedar sueltas referencias a la función anónima
+            //https://developer.mozilla.org/es/docs/Web/API/EventTarget/addEventListener#Memory_issues
+            
+            processEvent = (e) => {
+              y = element.getAttribute("fw-on:" + event);
+              initialState = handlers[y](initialState, e);
+              update(rootElementId, initialState, handlers);
+            }
+            element.addEventListener(event, processEvent, false);
+
+          });
+        })
+      }
+      updateEvents();
     }
   </script>
 
