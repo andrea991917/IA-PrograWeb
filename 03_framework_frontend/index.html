@@ -1,72 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
-<<<<<<< HEAD <head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Hello!</title>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hello!</title>
   </head>
-
   <body>
     <div id="root">
+      <h1 fw-content="header"></h1>
       <div fw-if="isPageLogIn">
         <form fw-on:submit="submitLogIn">
-          <h1>Log in</h1>
-
-          <input type="text" name="username" fw-attr:value="username" fw-on:change="changeUsername"
-            placeholder="Username or email" />
-          <input type="password" name="password" fw-attr:value="password" fw-on:change="changePassword"
-            placeholder="Password" />
+          <input
+            type="text"
+            name="username"
+            fw-attr:value="username"
+            fw-on:change="changeUsername"
+            placeholder="Username or email"
+          />
+          <input
+            type="password"
+            name="password"
+            fw-attr:value="password"
+            fw-attr:style="passwordInputStyle"
+            fw-on:change="changePassword"
+            placeholder="Password"
+          />
 
           <input type="submit" value="log in" />
 
-
           <p fw-if="isFormInvalid">
             Validation error: <span fw-content="validationMessage"></span>
-            =======
-
-            <head>
-              <meta charset="utf-8" />
-              <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-              <meta name="viewport" content="width=device-width, initial-scale=1" />
-              <title>Hello!</title>
-            </head>
-
-            <body>
-              <div id="root">
-                <h1 fw-content="header"></h1>
-                <div fw-if="isPageLogIn">
-                  <form fw-on:submit="submitLogIn">
-                    <input type="text" name="username" fw-attr:value="username" fw-on:change="changeUsername"
-                      placeholder="Username or email" />
-                    <input type="password" name="password" fw-attr:value="password" fw-attr:style="passwordInputStyle"
-                      fw-on:change="changePassword" placeholder="Password" />
-
-                    <input type="submit" value="log in" />
-
-                    <p fw-if="isFormInvalid">
-                      Validation error: <span fw-content="validationMessage"></span>
-                    </p>
-                  </form>
-                </div>
-                <div fw-if="isPageMain">
-                  <p>
-                    Hello, <span fw-content="username"></span>: this is the main page of a
-                    demo app.
-                    >>>>>>> 4ab30c76d0f54368847d7017dbeddabe91c91180
-                  </p>
+          </p>
         </form>
       </div>
       <div fw-if="isPageMain">
-        <h1>Demo app</h1>
         <p>
           Hello, <span fw-content="username"></span>: this is the main page of a
           demo app.
         </p>
       </div>
-
     </div>
-
     <script>
 
       const availableEvents = ["click", "submit", "input", "close", "change", "abort", "cached",
