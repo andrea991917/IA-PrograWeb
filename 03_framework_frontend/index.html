@@ -1,182 +1,198 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hello!</title>
+  </head>
+  <body>
+    <div id="root">
+      <h1 fw-content="header"></h1>
+      <div fw-if="isPageLogIn">
+        <form fw-on:submit="submitLogIn">
+          <input
+            type="text"
+            name="username"
+            fw-attr:value="username"
+            fw-on:change="changeUsername"
+            placeholder="Username or email"
+          />
+          <input
+            type="password"
+            name="password"
+            fw-attr:value="password"
+            fw-attr:style="passwordInputStyle"
+            fw-on:change="changePassword"
+            placeholder="Password"
+          />
 
-<head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Hello!</title>
-</head>
+          <input type="submit" value="log in" />
 
-<body>
-  <div id="root">
-    <h1 fw-content="header"></h1>
-    <div fw-if="isPageLogIn">
-      <form fw-on:submit="submitLogIn">
-        <input type="text" name="username" fw-attr:value="username" fw-on:change="changeUsername"
-          placeholder="Username or email" />
-        <input type="password" name="password" fw-attr:value="password" fw-attr:style="passwordInputStyle"
-          fw-on:change="changePassword" placeholder="Password" />
-
-        <input type="submit" value="log in" />
-
-        <p fw-if="isFormInvalid">
-          Validation error: <span fw-content="validationMessage"></span>
+          <p fw-if="isFormInvalid">
+            Validation error: <span fw-content="validationMessage"></span>
+          </p>
+        </form>
+      </div>
+      <div fw-if="isPageMain">
+        <p>
+          Hello, <span fw-content="username"></span>: this is the main page of a
+          demo app.
         </p>
-      </form>
+      </div>
     </div>
-    <div fw-if="isPageMain">
-      <p>
-        Hello, <span fw-content="username"></span>: this is the main page of a
-        demo app.
-      </p>
-    </div>
-  </div>
-  <script>
+    <script>
 
-    const availableEvents = ["click", "submit", "input", "close", "change", "abort", "cached",
-      "copy", "cut", "dblclick", "DOMContentLoaded", "drag", "drop", "emptied", "ended", "error",
-      "focus", "focusin", "focusout", "invalid", "keydown", "keypress", "keyup", "load", "message", "open",
-      "paste", "play", "reset", "resize", "scroll", "select", "show", "success", "timeout", "wheel"];
+      const availableEvents = ["click", "submit", "input", "close", "change", "abort", "cached",
+        "copy", "cut", "dblclick", "DOMContentLoaded", "drag", "drop", "emptied", "ended", "error",
+        "focus", "focusin", "focusout", "invalid", "keydown", "keypress", "keyup", "load", "message", "open",
+        "paste", "play", "reset", "resize", "scroll", "select", "show", "success", "timeout", "wheel"];
 
 
-    //funcion que actualiza los cambios y recibe 3 parametros
-    var update = (root, initialState, handlers) => {
-      //accedemos a los elementos con fw-if 
-      x = document.querySelectorAll("[fw-if]")
-      //iteramos en cada elemento con fw-if
-      x.forEach(element => {
-        y = element.getAttribute("fw-if")
-        //si el estado inicial del elemento es false
-        if (initialState[y] == false) {
-          //lo ocultamos
-          element.style.display = "none";
-        }
-        //si el estado inicial del elemento es true
-        if (initialState[y] == true) {
-          //lo mostramos
-          element.style.display = "block";
-        }
-      });
-      //accedemos a los elementos con fw-content 
-      x = document.querySelectorAll("[fw-content]")
-      //iteramos en cada elemento con fw-content
-      x.forEach(element => {
-        y = element.getAttribute("fw-content")
+      //funcion que actualiza los cambios y recibe 3 parametros
+      var update = (root, initialState, handlers) => {
+        //accedemos a los elementos con fw-if 
+        x = document.querySelectorAll("[fw-if]")
+        //iteramos en cada elemento con fw-if
+        x.forEach(element => {
+          y = element.getAttribute("fw-if")
+          //si el estado inicial del elemento es false
+          if (initialState[y] == false) {
+            //lo ocultamos
+            element.style.display = "none";
+          }
+          //si el estado inicial del elemento es true
+          if (initialState[y] == true) {
+            //lo mostramos
+            element.style.display = "block";
+          }
+        });
+        //accedemos a los elementos con fw-content 
+        x = document.querySelectorAll("[fw-content]")
+        //iteramos en cada elemento con fw-content
+        x.forEach(element => {
+          y = element.getAttribute("fw-content")
 
-        //ponemos el contenido del elemento
-        element.innerHTML = initialState[y]
-      });
-    }
+          //ponemos el contenido del elemento
+          element.innerHTML = initialState[y]
+        });
 
-    //obtenemos el valor del elemento con atributo fw-attr:value y el valor attribute como parametro
-    getAttr = (attribute) => {
-      x = document.querySelectorAll('[fw-attr\\:value=' + attribute + ']')
-      return x.value;
-    }
-    //establecemos el valor del elemento con atributo fw-attr:value y el valor attribute como parametro
-    setAttr = (attribute, value) => {
-      x = document.querySelectorAll('[fw-attr\\:value=' + attribute + ']')
-      x.value = value;
-    }
+        //accedemos a los elementos con fw-attr 
+        x = document.querySelectorAll("[fw-attr\\:value]")
+        //iteramos en cada elemento con fw-attr
+        x.forEach(element => {
+          y = element.getAttribute("fw-attr:value")
+          //ponemos el contenido del elemento
+          element.value = initialState[y]
+        });
 
-    window.createApp = ({
-      rootElementId,
-      initialState,
-      handlers
-    }) => {
-      update(rootElementId, initialState, handlers);
-      updateEvents = () => {
-        //accedemos a los elementos con fw-on más los eventos disponibles del array
-
-        availableEvents.forEach(event => {
-          x = document.querySelectorAll("[fw-on\\:" + event + "]");
-          //iteramos en cada elemento con fw-on
-          x.forEach(element => {
-
-            //Declaramos una función processEvent para el event handler en lugar de utilizar una 
-            //función anónima ya que utiliza menos memoria al no quedar sueltas referencias a la función anónima
-            //https://developer.mozilla.org/es/docs/Web/API/EventTarget/addEventListener#Memory_issues
-
-            processEvent = (e) => {
-              y = element.getAttribute("fw-on:" + event);
-              initialState = handlers[y](initialState, e);
-              update(rootElementId, initialState, handlers);
-            }
-            element.addEventListener(event, processEvent, false);
-
-          });
-        })
+        //accedemos a los elementos con fw-attr 
+        x = document.querySelectorAll("[fw-attr\\:style]")
+        //iteramos en cada elemento con fw-attr
+        x.forEach(element => {
+          y = element.getAttribute("fw-attr:style")
+          //ponemos el contenido del elemento
+          element.style = initialState[y]
+        });
       }
-      updateEvents();
-    }
-  </script>
 
-  <script>
-    window.createApp({
-      rootElementId: "root",
-      initialState: {
-        header: "Log into the Demo App",
-        isPageLogIn: true,
-        isPageMain: false,
-        username: "",
-        password: "",
-        passwordInputStyle: "background-color: lightyellow;",
-        isFormInvalid: false,
-        validationMessage: "",
-      },
-      handlers: {
-        changeUsername: (currentState, event) => {
-          const username = event.target.value;
-          return {
-            ...currentState,
-            isFormInvalid: false,
-            username,
-          };
-        },
-        changePassword: (currentState, event) => {
-          const password = event.target.value;
-          return {
-            ...currentState,
-            isFormInvalid: false,
-            passwordInputStyle:
-              password.length >= 8
-                ? "background-color: lightgreen;"
-                : "background-color: lightyellow;",
-            password,
-          };
-        },
-        submitLogIn: (currentState, event) => {
-          event.preventDefault();
+      window.createApp = ({
+        rootElementId,
+        initialState,
+        handlers
+      }) => {
+        update(rootElementId, initialState, handlers);
+        updateEvents = () => {
+          //accedemos a los elementos con fw-on más los eventos disponibles del array
 
-          if (currentState.username === "") {
+          availableEvents.forEach(event => {
+            x = document.querySelectorAll("[fw-on\\:" + event + "]");
+            //iteramos en cada elemento con fw-on
+            x.forEach(element => {
+
+              //Declaramos una función processEvent para el event handler en lugar de utilizar una 
+              //función anónima ya que utiliza menos memoria al no quedar sueltas referencias a la función anónima
+              //https://developer.mozilla.org/es/docs/Web/API/EventTarget/addEventListener#Memory_issues
+
+              processEvent = (e) => {
+                y = element.getAttribute("fw-on:" + event);
+                initialState = handlers[y](initialState, e);
+                update(rootElementId, initialState, handlers);
+              }
+              element.addEventListener(event, processEvent, false);
+
+            });
+          })
+        }
+        updateEvents();
+      }
+    </script>
+
+    <script>
+      window.createApp({
+        rootElementId: "root",
+        initialState: {
+          header: "Log into the Demo App",
+          isPageLogIn: true,
+          isPageMain: false,
+          username: "",
+          password: "",
+          passwordInputStyle: "background-color: lightyellow;",
+          isFormInvalid: false,
+          validationMessage: "",
+        },
+        handlers: {
+          changeUsername: (currentState, event) => {
+            const username = event.target.value;
             return {
               ...currentState,
-              isFormInvalid: true,
-              validationMessage: "You must provide a username",
+              isFormInvalid: false,
+              username,
             };
-          }
-
-          if (currentState.password.length < 8) {
+          },
+          changePassword: (currentState, event) => {
+            const password = event.target.value;
             return {
               ...currentState,
-              isFormInvalid: true,
-              validationMessage:
-                "The password must contain at least 8 characters",
+              isFormInvalid: false,
+              passwordInputStyle:
+                password.length >= 8
+                  ? "background-color: lightgreen;"
+                  : "background-color: lightyellow;",
+              password,
             };
-          }
+          },
+          submitLogIn: (currentState, event) => {
+            event.preventDefault();
 
-          return {
-            ...currentState,
-            isFormInvalid: false,
-            isPageLogIn: false,
-            isPageMain: true,
-            header: "Demo app",
-          };
+            if (currentState.username === "") {
+              return {
+                ...currentState,
+                isFormInvalid: true,
+                validationMessage: "You must provide a username",
+              };
+            }
+
+            if (currentState.password.length < 8) {
+              return {
+                ...currentState,
+                isFormInvalid: true,
+                validationMessage:
+                  "The password must contain at least 8 characters",
+              };
+            }
+
+            return {
+              ...currentState,
+              isFormInvalid: false,
+              isPageLogIn: false,
+              isPageMain: true,
+              header: "Demo app",
+            };
+          },
         },
-      },
-    });
-  </script>
-</body>
+      });
+    </script>
+  </body>
 
 </html>
