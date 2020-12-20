@@ -1,0 +1,19 @@
+{
+  "name": "tests",
+  "version": "1.0.0",
+  "description": "",
+  "main": "client.js",
+  "scripts": {
+    "start": "serve ..",
+    "cypress": "cypress run",
+    "test": "concurrently --kill-others \"npm run start\" \"npm run cypress\""
+  },
+  "keywords": [],
+  "author": "Gerardo Munguia",
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^5.3.0",
+    "cypress": "^6.0.1",
+    "serve": "^11.3.2"
+  }
+}
