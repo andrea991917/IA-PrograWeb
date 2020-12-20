@@ -76,17 +76,24 @@
           //ponemos el contenido del elemento
           element.innerHTML = initialState[y]
         });
-      }
 
-      //obtenemos el valor del elemento con atributo fw-attr:value y el valor attribute como parametro
-      getAttr = (attribute) => {
-        x = document.querySelectorAll('[fw-attr\\:value=' + attribute + ']')
-        return x.value;
-      }
-      //establecemos el valor del elemento con atributo fw-attr:value y el valor attribute como parametro
-      setAttr = (attribute, value) => {
-        x = document.querySelectorAll('[fw-attr\\:value=' + attribute + ']')
-        x.value = value;
+        //accedemos a los elementos con fw-attr 
+        x = document.querySelectorAll("[fw-attr\\:value]")
+        //iteramos en cada elemento con fw-attr
+        x.forEach(element => {
+          y = element.getAttribute("fw-attr:value")
+          //ponemos el contenido del elemento
+          element.value = initialState[y]
+        });
+
+        //accedemos a los elementos con fw-attr 
+        x = document.querySelectorAll("[fw-attr\\:style]")
+        //iteramos en cada elemento con fw-attr
+        x.forEach(element => {
+          y = element.getAttribute("fw-attr:style")
+          //ponemos el contenido del elemento
+          element.style = initialState[y]
+        });
       }
 
       window.createApp = ({
