@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test</title>
+</head>
+
+<body>
+    <div id="gameDiv">
+
+    </div>
+</body>
+
+<script type="module" src="./js/breaker.js"></script>
+
+<script type="module">
+
+    import game from "./js/breaker.js";
+    window.game = game;
+    console.log(game);
+
+    let width = game.data.options.areaWidth;
+    let height = game.data.options.areaHeight;
+    
+    let playerDim = game.methods.getPlayerDim();
+    console.log(playerDim);
+    game.methods.addObject(new game.gameObject(playerDim.x, playerDim.y,  playerDim.w,  playerDim.h));
+
+    window.player = game.data.objects[0];
+
+    //se mueve cada 10milisegundos
+    setInterval(game.methods.update, 10)
+</script>
+
+<script type="module">
+import game from "./js/breaker.js";
+
+let speedPlayer = 10; 
+
+//raqueta
+game.methods.addObject(new game.gameObject(0,0, game.data.options.areaWidth, game.data.options.areaHeight));
+
+
+for (let x = 0; x < game.data.options.columns; x++) {
+    for (let y = 0; y < game.data.options.rows; y++) {
+        let op = game.data.options;
+        //bloques
+        let ancho = op.areaWidth/op.columns;
+        let alto = (op.areaHeight*0.2)/op.rows;
+ 
+        let block = game.methods.addObject(new game.gameObject(x * ancho, y * alto, ancho, alto));
+      
+    }
+}
+
+
+    document.addEventListener('keydown', game.methods.keyDown);
+</script>
+
+
+</html>
