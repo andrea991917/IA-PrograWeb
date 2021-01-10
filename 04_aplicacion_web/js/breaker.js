@@ -64,8 +64,8 @@ const addBall = () => {
     ball = addObject(new gameObject(x_ball, y_ball, w_ball, h_ball));
     //Velocidad inicial pelota
     ball.go.speed = {
-        x: -1,
-        y: -1
+        x: -3,
+        y: -3
     }
     return ball;
 }
@@ -86,6 +86,17 @@ const keyDown = (event) => {
     }
 }
 
+getAngle = () => {
+    var angle = Math.atan2(this.y, this.x);   //radians
+    // you need to devide by PI, and MULTIPLY by 180:
+    var degrees = 180*angle/Math.PI;  //degrees
+    return (360+Math.round(degrees))%360; //round number, avoid decimal fragments
+}
+
+const collisionDetection = (obj1, obj2) => {
+    return (obj1.go.x < obj2.go.x + obj2.go.width && obj1.go.x + obj1.go.width > obj2.go.x &&
+        obj1.go.y < obj2.go.y + obj2.go.height && obj1.go.height + obj1.go.y > obj2.go.y)
+}
 
 const update = () => {
     ball.go.x += ball.go.speed.x;
@@ -115,7 +126,16 @@ const update = () => {
     }
     if(collision_up || collision_down){
         ball.go.speed.y = - ball.go.speed.y;
+    } 
 
+    if(collisionDetection(ball, player))
+        let player_x = player.go.x + (player.go.width / 2);
+        let player_y = player.go.y;
+        let ball_x = ball.go.x + 5;
+        let ball_y = ball.go.y;
+
+        {
+        
     }
 
 }
@@ -130,7 +150,8 @@ const game = {
         getPlayerDim,
         addPlayer,
         addGameZone,
-        addBall
+        addBall,
+        
     }
 };
 
