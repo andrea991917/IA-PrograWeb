@@ -19,28 +19,21 @@
 
     import game from "./js/breaker.js";
     window.game = game;
-    console.log(game);
-
-    let width = game.data.options.areaWidth;
-    let height = game.data.options.areaHeight;
-    
-    let playerDim = game.methods.getPlayerDim();
-    console.log(playerDim);
-    game.methods.addObject(new game.gameObject(playerDim.x, playerDim.y,  playerDim.w,  playerDim.h));
-
-    window.player = game.data.objects[0];
 
     //se mueve cada 10milisegundos
     setInterval(game.methods.update, 10)
 </script>
 
 <script type="module">
-import game from "./js/breaker.js";
+    import game from "./js/breaker.js";
 
+//Agregar jugador
+game.methods.addPlayer();
+//Agregar area de juego
+game.methods.addGameZone();
+//Agregar bola
+game.methods.addBall();
 let speedPlayer = 10; 
-
-//raqueta
-game.methods.addObject(new game.gameObject(0,0, game.data.options.areaWidth, game.data.options.areaHeight));
 
 
 for (let x = 0; x < game.data.options.columns; x++) {
@@ -54,7 +47,6 @@ for (let x = 0; x < game.data.options.columns; x++) {
       
     }
 }
-
 
     document.addEventListener('keydown', game.methods.keyDown);
 </script>
