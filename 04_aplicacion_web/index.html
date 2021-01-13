@@ -29,6 +29,8 @@
 
 //Agregar jugador
 game.methods.addPlayer();
+//Agregar Bloques
+game.methods.addBlocks();
 //Agregar area de juego
 game.methods.addGameZone();
 //Agregar bola
@@ -36,19 +38,8 @@ game.methods.addBall();
 let speedPlayer = 10; 
 
 
-for (let x = 0; x < game.data.options.columns; x++) {
-    for (let y = 0; y < game.data.options.rows; y++) {
-        let op = game.data.options;
-        //bloques
-        let ancho = op.areaWidth/op.columns;
-        let alto = (op.areaHeight*0.2)/op.rows;
- 
-        let block = game.methods.addObject(new game.gameObject(x * ancho, y * alto, ancho, alto));
-      
-    }
-}
-
     document.addEventListener('keydown', game.methods.keyDown);
+    document.addEventListener('keyup', game.methods.keyUp);
 </script>
 
 

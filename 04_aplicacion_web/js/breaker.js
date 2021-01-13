@@ -4,11 +4,13 @@ import gameObject from "./game_object.js"
 let data = {
     objects: [],
     options: {
-        speedPlayer: 10,
+        speedPlayer: 3,
         columns: 12,
         rows: 5,
         areaWidth: 800,
         areaHeight: 600,
+        speedBall: 5,
+        separation:30
 
     }
 
@@ -46,6 +48,22 @@ const addGameZone = () => {
     return addObject(new gameObject(0, 0, data.options.areaWidth, data.options.areaHeight));
 }
 
+//Crear bloques
+const addBlocks = () =>{
+    
+    for (let x = 0; x < game.data.options.columns; x++) {
+        for (let y = 0; y < game.data.options.rows; y++) {
+            let op = game.data.options;
+            //bloques
+            let ancho = (op.areaWidth - game.data.options.separation*2)/op.columns;
+            let alto = (op.areaHeight*0.2)/op.rows;
+     
+            let block = game.methods.addObject(new game.gameObject(x * ancho + game.data.options.separation, y * alto + game.data.options.separation, ancho, alto));
+          
+        }
+    }
+}
+
 //Crear jugador
 let player = null;
 const addPlayer = () => {
@@ -70,14 +88,18 @@ const addBall = () => {
     return ball;
 }
 
+let keyLeft = false;
+let keyRight = false;
+let playerDirection = 0;
+
 const keyDown = (event) => {
     switch (event.keyCode) {
         case 37: //Izquierda
-            data.objects[0].go.moveX(-1 * data.options.speedPlayer)
+        keyLeft = true;
             break;
         case 39: //Derecha
-            data.objects[0].go.moveX(1 * data.options.speedPlayer)
-            break;
+        keyRight = true;
+                break;
         case 32: //Espacio
             console.log(window.game);
             break;
@@ -86,11 +108,39 @@ const keyDown = (event) => {
     }
 }
 
-getAngle = () => {
-    var angle = Math.atan2(this.y, this.x);   //radians
+const keyUp = (event) => {
+    switch (event.keyCode) {
+        case 37: //Izquierda
+        keyLeft = false;
+            break;
+        case 39: //Derecha
+        keyRight = false;
+                break;
+        case 32: //Espacio
+            console.log(window.game);
+            break;
+        default:
+            break;
+    }
+}
+
+const getAngle = () => {
+    var angle = Math.atan2(this.y, this.x); //radians
     // you need to devide by PI, and MULTIPLY by 180:
-    var degrees = 180*angle/Math.PI;  //degrees
-    return (360+Math.round(degrees))%360; //round number, avoid decimal fragments
+    var degrees = 180 * angle / Math.PI; //degrees
+    return (360 + Math.round(degrees)) % 360; //round number, avoid decimal fragments
+}
+
+const calcVectorFromAngle = (angle) => {
+    let rad = angle * Math.PI / 180;
+    let x = Math.cos(rad);
+    let y = Math.sin(rad);
+
+    return {
+        x,
+        y
+    }
+
 }
 
 const collisionDetection = (obj1, obj2) => {
@@ -99,9 +149,6 @@ const collisionDetection = (obj1, obj2) => {
 }
 
 const update = () => {
-    ball.go.x += ball.go.speed.x;
-    ball.go.y += ball.go.speed.y;
-
     data.objects.forEach(e => {
         //para que pueda moverse en cualquier lado de la pantalla
         e.element.style.position = "absolute";
@@ -121,23 +168,49 @@ const update = () => {
     let collision_down = ball.go.y > (data.options.areaHeight - ball.go.height);
 
     //Condicionales para cambiar direccion de pelota
-    if(collision_left || collision_right){
-        ball.go.speed.x = - ball.go.speed.x;
+    if (collision_left || collision_right) {
+        ball.go.speed.x = -ball.go.speed.x;
     }
-    if(collision_up || collision_down){
-        ball.go.speed.y = - ball.go.speed.y;
-    } 
+    if (collision_up || collision_down) {
+        ball.go.speed.y = -ball.go.speed.y;
+    }
 
-    if(collisionDetection(ball, player))
+    if (collisionDetection(ball, player)) {
         let player_x = player.go.x + (player.go.width / 2);
         let player_y = player.go.y;
         let ball_x = ball.go.x + 5;
         let ball_y = ball.go.y;
 
-        {
-        
+        let player_l = player_x - player.go.width / 2;
+        let player_r = player_x + player.go.width / 2
+        //Distancia entre la pelota y el jugador
+        let distance_P_B = ball_x - player_l;
+        //pasamos la distancia a porcentaje en base al tamaño del jugador
+        let angle = (180 * distance_P_B) / player.go.width;
+
+        //ponemos la nueva velocidad de nuestra pelota despues de chocar con nuestro player
+        let newSpeedX = calcVectorFromAngle(angle).x * -1 * data.options.speedBall;
+        let newSpeedY = calcVectorFromAngle(angle).y * -1 * data.options.speedBall;
+        ball.go.speed.x = newSpeedX;
+        ball.go.speed.y = newSpeedY;
     }
 
+    //moviemiento player 
+    
+    if(player.go.x>0 && keyLeft){
+        data.objects[0].go.moveX(-1 * data.options.speedPlayer)
+    }
+    if(player.go.x<(data.options.areaWidth - player.go.width) && keyRight){
+        data.objects[0].go.moveX(1 * data.options.speedPlayer)
+    }
+   
+    
+   
+    
+
+    //movimiento de la bola
+    ball.go.x += ball.go.speed.x;
+    ball.go.y += ball.go.speed.y;
 }
 
 const game = {
@@ -147,11 +220,13 @@ const game = {
         update,
         addObject,
         keyDown,
+        keyUp,
         getPlayerDim,
         addPlayer,
         addGameZone,
         addBall,
-        
+        addBlocks,
+
     }
 };
 
