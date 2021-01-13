@@ -10,11 +10,28 @@ let data = {
         areaWidth: 800,
         areaHeight: 600,
         speedBall: 5,
-        separation:30
+        separation: 30
 
     }
 
 };
+
+let ball_moving = false;
+let lifes = 3;
+
+const restartAll = () =>{
+    data.objects.forEach(e => {
+        e.element.remove();
+    });
+
+    data.objects = [];
+    addPlayer();
+    addBall();
+    addBlocks();
+    addGameZone();
+    lifes = 3;
+    ball_moving = false;
+}
 
 
 const getPlayerDim = () => {
@@ -48,18 +65,21 @@ const addGameZone = () => {
     return addObject(new gameObject(0, 0, data.options.areaWidth, data.options.areaHeight));
 }
 
+let ArrayBlocks = []
+
 //Crear bloques
-const addBlocks = () =>{
-    
+const addBlocks = () => {
+
     for (let x = 0; x < game.data.options.columns; x++) {
         for (let y = 0; y < game.data.options.rows; y++) {
             let op = game.data.options;
             //bloques
-            let ancho = (op.areaWidth - game.data.options.separation*2)/op.columns;
-            let alto = (op.areaHeight*0.2)/op.rows;
-     
+            let ancho = (op.areaWidth - game.data.options.separation * 2) / op.columns;
+            let alto = (op.areaHeight * 0.2) / op.rows;
+
             let block = game.methods.addObject(new game.gameObject(x * ancho + game.data.options.separation, y * alto + game.data.options.separation, ancho, alto));
-          
+            //agregamos cada bloque al array
+            ArrayBlocks.push(block);
         }
     }
 }
@@ -93,16 +113,23 @@ let keyRight = false;
 let playerDirection = 0;
 
 const keyDown = (event) => {
+    console.log(event.keyCode);
     switch (event.keyCode) {
         case 37: //Izquierda
-        keyLeft = true;
+            keyLeft = true;
             break;
         case 39: //Derecha
-        keyRight = true;
-                break;
+            keyRight = true;
+            break;
         case 32: //Espacio
+            if(lifes > 0){
+                ball_moving = true;
+            }
             console.log(window.game);
             break;
+        case 82: 
+        restartAll();
+        break;  
         default:
             break;
     }
@@ -111,11 +138,11 @@ const keyDown = (event) => {
 const keyUp = (event) => {
     switch (event.keyCode) {
         case 37: //Izquierda
-        keyLeft = false;
+            keyLeft = false;
             break;
         case 39: //Derecha
-        keyRight = false;
-                break;
+            keyRight = false;
+            break;
         case 32: //Espacio
             console.log(window.game);
             break;
@@ -175,6 +202,45 @@ const update = () => {
         ball.go.speed.y = -ball.go.speed.y;
     }
 
+    if(collision_down){
+        ball_moving = false;
+        lifes--;
+        console.log(lifes);
+    }
+
+    ArrayBlocks.forEach(obj => {
+        if (collisionDetection(obj, ball)) {
+            console.log(obj.go);
+            ArrayBlocks.splice(ArrayBlocks.indexOf(obj), 1);
+            obj.element.style.visibility = 'hidden';
+
+            let y_height = obj.go.y + obj.go.height;
+            let y = obj.go.y;
+            let x_width = obj.go.x + obj.go.width;
+            let x = obj.go.x;
+            let ball_center_x = ball.go.x + 5;
+            let ball_center_y = ball.go.y + 5;
+            //arriba
+            if (ball_center_y > y && ball_center_y > y_height) {
+                ball.go.speed.y = -ball.go.speed.y;
+
+                //Abajo
+            } else if (ball_center_y < y && ball_center_y < y_height) {
+                ball.go.speed.y = -ball.go.speed.y;
+                //izquierda
+            } else if (ball_center_x < y && ball_center_x < x_width) {
+                ball.go.speed.x = -ball.go.speed.x;
+                //derecha
+            } else if (ball_center_x > y && ball_center_x > x_width) {
+                ball.go.speed.x = -ball.go.speed.x;
+            }
+
+
+        }
+
+    })
+
+
     if (collisionDetection(ball, player)) {
         let player_x = player.go.x + (player.go.width / 2);
         let player_y = player.go.y;
@@ -195,22 +261,33 @@ const update = () => {
         ball.go.speed.y = newSpeedY;
     }
 
-    //moviemiento player 
-    
-    if(player.go.x>0 && keyLeft){
+    //moviemiento constante player 
+    if (player.go.x > 0 && keyLeft) {
         data.objects[0].go.moveX(-1 * data.options.speedPlayer)
     }
-    if(player.go.x<(data.options.areaWidth - player.go.width) && keyRight){
+    if (player.go.x < (data.options.areaWidth - player.go.width) && keyRight) {
         data.objects[0].go.moveX(1 * data.options.speedPlayer)
     }
-   
-    
-   
-    
+
+
+
+
 
     //movimiento de la bola
-    ball.go.x += ball.go.speed.x;
-    ball.go.y += ball.go.speed.y;
+    if (ball_moving)  {
+        ball.go.x += ball.go.speed.x;
+        ball.go.y += ball.go.speed.y;
+    }else{
+        //para que pelota se mueva junto a player 
+        let w_ball = 10;
+        let h_ball = 10;
+        let x_ball = (player.go.x + (player.go.width / 2)) - (w_ball / 2);
+        let y_ball = player.go.y - h_ball * 1.25;
+        ball.go.x = x_ball;
+        ball.go.y = y_ball;
+    }
+
+    document.getElementById('lifes').innerHTML = lifes;
 }
 
 const game = {
@@ -226,6 +303,7 @@ const game = {
         addGameZone,
         addBall,
         addBlocks,
+        restartAll
 
     }
 };
