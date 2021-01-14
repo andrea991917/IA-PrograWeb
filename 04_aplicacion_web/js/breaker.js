@@ -62,13 +62,25 @@ const addObject = (gameObject) => {
 
 //Area de Juego
 const addGameZone = () => {
-    return addObject(new gameObject(0, 0, data.options.areaWidth, data.options.areaHeight));
+    let gameZone  = addObject(new gameObject(0, 0, data.options.areaWidth, data.options.areaHeight));
+    gameZone.go.color = "#272727";
+    gameZone.element.setAttribute('id', 'gameZone');
+
+    return gameZone;
 }
 
 let ArrayBlocks = []
+const YELLOW = 'rgb(250, 255, 145)';
+const BLUE = 'rgb(69, 87, 247)';
+const GREEN = 'rgb(249, 140, 255)';
+const PINK = 'rgb(127, 245, 159)';
+const RED = 'rgb(255, 46, 81)';
 
 //Crear bloques
 const addBlocks = () => {
+                        //rosado, verde, azul,amarillo,rojo, 
+
+    let blockColors = [RED,BLUE ,YELLOW ,PINK ,GREEN];
 
     for (let x = 0; x < game.data.options.columns; x++) {
         for (let y = 0; y < game.data.options.rows; y++) {
@@ -78,6 +90,8 @@ const addBlocks = () => {
             let alto = (op.areaHeight * 0.2) / op.rows;
 
             let block = game.methods.addObject(new game.gameObject(x * ancho + game.data.options.separation, y * alto + game.data.options.separation, ancho, alto));
+            //asignamos un color aleatorio a los bloques
+            block.go.color = blockColors[Math.floor(Math.random() * blockColors.length)]
             //agregamos cada bloque al array
             ArrayBlocks.push(block);
         }
@@ -89,17 +103,26 @@ let player = null;
 const addPlayer = () => {
     let playerDim = getPlayerDim();
     player = addObject(new game.gameObject(playerDim.x, playerDim.y, playerDim.w, playerDim.h));
+    player.go.color = 'rgb(192, 192, 192)';
+    player.element.style.borderWidth = "1px"
+    player.element.borderRadius = '5px'
     return player;
 }
 
 //Crear Bola
 let ball = null;
 const addBall = () => {
-    let w_ball = 10;
-    let h_ball = 10;
+    let w_ball = 15;
+    let h_ball = 15;
     let x_ball = (player.go.x + (player.go.width / 2)) - (w_ball / 2);
     let y_ball = player.go.y - h_ball * 1.25;
     ball = addObject(new gameObject(x_ball, y_ball, w_ball, h_ball));
+    //color
+    ball.go.color = 'rgb(0, 0, 0)';
+    //estilos de pelota
+    ball.element.style.borderRadius = '25px'
+    ball.element.style.borderWidth = '1px'
+    ball.element.setAttribute('id', 'ball');
     //Velocidad inicial pelota
     ball.go.speed = {
         x: -3,
@@ -184,6 +207,9 @@ const update = () => {
         e.element.style.top = e.go.y + 'px';
         e.element.style.left = e.go.x + 'px';
         e.element.style.borderStyle = 'solid';
+        //propiedad que de los bloques para color
+        e.element.style.backgroundColor = e.go.color;
+
         // e.element.style.backgroundColor = 'black';
     });
 
@@ -210,9 +236,14 @@ const update = () => {
 
     ArrayBlocks.forEach(obj => {
         if (collisionDetection(obj, ball)) {
-            console.log(obj.go);
-            ArrayBlocks.splice(ArrayBlocks.indexOf(obj), 1);
-            obj.element.style.visibility = 'hidden';
+            if(obj.element.style.backgroundColor === RED ){
+                obj.go.color = BLUE;
+            }else if(obj.element.style.backgroundColor === BLUE){
+                obj.go.color = YELLOW;
+            }else{
+                ArrayBlocks.splice(ArrayBlocks.indexOf(obj), 1);
+                obj.element.style.visibility = 'hidden';
+            }
 
             let y_height = obj.go.y + obj.go.height;
             let y = obj.go.y;
@@ -270,19 +301,16 @@ const update = () => {
     }
 
 
-
-
-
     //movimiento de la bola
     if (ball_moving)  {
         ball.go.x += ball.go.speed.x;
         ball.go.y += ball.go.speed.y;
     }else{
         //para que pelota se mueva junto a player 
-        let w_ball = 10;
-        let h_ball = 10;
+        let w_ball = 18;
+        let h_ball = 18;
         let x_ball = (player.go.x + (player.go.width / 2)) - (w_ball / 2);
-        let y_ball = player.go.y - h_ball * 1.25;
+        let y_ball = player.go.y - h_ball * 1
         ball.go.x = x_ball;
         ball.go.y = y_ball;
     }

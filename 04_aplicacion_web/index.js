@@ -36,6 +36,9 @@ getHandlers = (request) => {
                 case 'jpeg':
                     headers['content-type'] = 'image/jpeg'
                     break;
+                case 'jpg':
+                    headers['content-type'] = 'image/jpeg'
+                    break;
                 case 'css':
                     headers['content-type'] = 'text/css'
                     break;
