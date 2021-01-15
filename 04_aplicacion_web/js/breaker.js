@@ -13,13 +13,13 @@ let data = {
         separation: 30
 
     }
-
 };
 
 let ball_moving = false;
 let lifes = 3;
 
 const restartAll = () =>{
+    document.getElementById('game_over').style.visibility = 'hidden';
     data.objects.forEach(e => {
         e.element.remove();
     });
@@ -231,7 +231,11 @@ const update = () => {
     if(collision_down){
         ball_moving = false;
         lifes--;
-        console.log(lifes);
+        if(lifes == 0){
+            document.getElementById('game_over').style.visibility = 'visible';
+
+        }
+      
     }
 
     ArrayBlocks.forEach(obj => {

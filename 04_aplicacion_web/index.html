@@ -9,23 +9,51 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js" integrity="sha384-LtrjvnR4Twt/qOuYxE721u19sVFLVSA4hf/rRt6PrZTmiPltdZcI7q7PXQBYTKyf" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="./styles/style.css">
+    <link rel="stylesheet" href="./styles/game_over.css">
+    <link href='https://fonts.googleapis.com/css?family=Black+Ops+One' rel='stylesheet' type='text/css'>
 </head>
 
 <body>
     <div id="gameDiv">
 
     </div>
-    <div class="card instructions" style="">
-        <h5 class="card-header">Featured</h5>
-        <div class="card-body">
-          <h5 class="card-title">Vidas</h5>
-          <p class="card-text" id= "lifes">With supporting text below as a natural lead-in to additional content.</p>
-          <h5 class="card-title">Puntuacion</h5>
-          <p class="card-text" id ="points">With supporting text below as a natural lead-in to additional content.</p>
-          <a href="#" class="btn btn-primary">Go somewhere</a>
-          
+
+    <div id="instructions">
+
+        <div class="inst_text">
+        <p> INTRUCCIONES </p>
+       
         </div>
-      </div>
+    
+        <div class="intructions_content">
+            <p> Tecla 'R' -> Reiniciar Partida</p> 
+            <p> Tecla 'Espacio' -> Dispara la bola</p> 
+             <p> Bloques Rojos -> Golpealos 3 veces</p> 
+             <p> Bloques Azules -> Golpealos 2 veces</p> 
+        </div>
+    
+        <div class="play_div">
+            <div id="play" class="yes"> <a href="#"> JUGAR </a> </div>
+         
+        </div>
+    
+    </div>
+    
+    <div id="game_over">
+
+        <div class="gameover">
+        <p> GAME </p>
+        <p> OVER </p>
+        </div>
+    
+        <div class="continue"> <p> CONTINUE? </p> </div>
+    
+        <div class="opcoes">
+            <div id="yes" class="yes"> <a href="#"> SI </a> </div>
+            <div id="no"  class="no"> <a href="#"> NO </a> </div>
+        </div>
+    
+    </div>
 </body>
 
 <script type="module" src="./js/breaker.js"></script>
@@ -47,6 +75,9 @@ let speedPlayer = 10;
     game.methods.restartAll();
     document.addEventListener('keydown', game.methods.keyDown);
     document.addEventListener('keyup', game.methods.keyUp);
+    document.getElementById('yes').addEventListener('click',game.methods.restartAll) 
+    document.getElementById('play').addEventListener('click',game.methods.restartAll) 
+    document.getElementById('no').addEventListener('click',window.close()) 
 </script>
 
 
