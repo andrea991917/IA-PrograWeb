@@ -5,9 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js" integrity="sha384-LtrjvnR4Twt/qOuYxE721u19sVFLVSA4hf/rRt6PrZTmiPltdZcI7q7PXQBYTKyf" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"
+        integrity="sha384-LtrjvnR4Twt/qOuYxE721u19sVFLVSA4hf/rRt6PrZTmiPltdZcI7q7PXQBYTKyf" crossorigin="anonymous">
+    </script>
     <link rel="stylesheet" href="./styles/style.css">
     <link rel="stylesheet" href="./styles/game_over.css">
     <link href='https://fonts.googleapis.com/css?family=Black+Ops+One' rel='stylesheet' type='text/css'>
@@ -19,40 +24,57 @@
     </div>
 
     <div id="instructions">
-
         <div class="inst_text">
-        <p> INTRUCCIONES </p>
-       
+            <p> INTRUCCIONES </p>
         </div>
-    
         <div class="intructions_content">
-            <p> Tecla 'R' -> Reiniciar Partida</p> 
-            <p> Tecla 'Espacio' -> Dispara la bola</p> 
-             <p> Bloques Rojos -> Golpealos 3 veces</p> 
-             <p> Bloques Azules -> Golpealos 2 veces</p> 
+            <p> Tecla 'R' -> Reiniciar Partida</p>
+            <p> Tecla 'Espacio' -> Dispara la bola</p>
+            <p> Bloques Rojos -> Golpealos 3 veces</p>
+            <p> Bloques Azules -> Golpealos 2 veces</p>
         </div>
-    
+         <div class="max_puntaje">
+            <p> Mayor puntaje: <span class = "maxPoints"></span></p>
+        </div>
         <div class="play_div">
             <div id="play" class="yes"> <a href="#"> JUGAR </a> </div>
-         
         </div>
-    
     </div>
-    
+
     <div id="game_over">
 
         <div class="gameover">
-        <p> GAME </p>
-        <p> OVER </p>
+            <p> GAME </p>
+            <p> OVER </p>
         </div>
-    
-        <div class="continue"> <p> CONTINUE? </p> </div>
-    
+
+        <div class="continue">
+            <p> CONTINUE? </p>
+            <p> Mayor puntaje: <span class = "maxPoints"></span></p>
+        </div>
+
         <div class="opcoes">
             <div id="yes" class="yes"> <a href="#"> SI </a> </div>
-            <div id="no"  class="no"> <a href="#"> NO </a> </div>
+            <div id="no" class="no"> <a href="#"> NO </a> </div>
         </div>
+
+    </div>
+    <div id="ganaste">
+        <div class="inst_text">
+            <p> GANASTE </p>
+        </div>
+        <div class="continue">
+            <p> CONTINUE? </p>
+        </div>
+
+        <div class="opcoes">
+            <div id="continue" class="yes"> <a href="#"> SI </a> </div>
+            <div id="no" class="no"> <a href="#"> NO </a> </div>
+        </div>
+    </div>
     
+    <div class="card-body">
+        <h5 class="card-title">Máxima puntuación: <span class="maxPoints"></span> Vidas: <span id="lifes">   </span>      Puntuación: <span id="points"></span></h5>
     </div>
 </body>
 
@@ -76,7 +98,9 @@ let speedPlayer = 10;
     document.addEventListener('keydown', game.methods.keyDown);
     document.addEventListener('keyup', game.methods.keyUp);
     document.getElementById('yes').addEventListener('click',game.methods.restartAll) 
-    document.getElementById('play').addEventListener('click',game.methods.restartAll) 
+    document.getElementById('continue').addEventListener('click',game.methods.winHidden) 
+    document.getElementById('continue').addEventListener('click',game.methods.restartAll) 
+    document.getElementById('play').addEventListener('click',game.methods.intructionsHidden) 
     document.getElementById('no').addEventListener('click',window.close()) 
 </script>
 

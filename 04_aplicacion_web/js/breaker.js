@@ -17,8 +17,12 @@ let data = {
 
 let ball_moving = false;
 let lifes = 3;
+let points = 0;
 
 const restartAll = () =>{
+    max_p = window.localStorage.getItem('max_points')
+
+    points = 0;
     document.getElementById('game_over').style.visibility = 'hidden';
     data.objects.forEach(e => {
         e.element.remove();
@@ -31,6 +35,16 @@ const restartAll = () =>{
     addGameZone();
     lifes = 3;
     ball_moving = false;
+}
+
+const intructionsHidden = () =>{
+    document.getElementById('instructions').style.visibility = 'hidden';
+ 
+}
+
+const winHidden = () =>{
+    document.getElementById('ganaste').style.visibility = 'hidden';
+ 
 }
 
 
@@ -79,7 +93,7 @@ const RED = 'rgb(255, 46, 81)';
 //Crear bloques
 const addBlocks = () => {
                         //rosado, verde, azul,amarillo,rojo, 
-
+    ArrayBlocks=[];
     let blockColors = [RED,BLUE ,YELLOW ,PINK ,GREEN];
 
     for (let x = 0; x < game.data.options.columns; x++) {
@@ -131,12 +145,20 @@ const addBall = () => {
     return ball;
 }
 
+let max_p = 0;
+const loadPoints = () => {
+    max_p = window.localStorage.getItem('max_points')
+    if(points > max_p){
+    window.localStorage.setItem('max_points', points) 
+    }
+}
+
 let keyLeft = false;
 let keyRight = false;
 let playerDirection = 0;
 
 const keyDown = (event) => {
-    console.log(event.keyCode);
+   // console.log(event.keyCode);
     switch (event.keyCode) {
         case 37: //Izquierda
             keyLeft = true;
@@ -145,7 +167,7 @@ const keyDown = (event) => {
             keyRight = true;
             break;
         case 32: //Espacio
-            if(lifes > 0){
+            if(lifes > 0 && (document. getElementById('instructions').style.visibility == 'hidden')){
                 ball_moving = true;
             }
             console.log(window.game);
@@ -157,6 +179,7 @@ const keyDown = (event) => {
             break;
     }
 }
+
 
 const keyUp = (event) => {
     switch (event.keyCode) {
@@ -233,20 +256,30 @@ const update = () => {
         lifes--;
         if(lifes == 0){
             document.getElementById('game_over').style.visibility = 'visible';
+            loadPoints();
 
         }
       
     }
-
+   
+    
     ArrayBlocks.forEach(obj => {
         if (collisionDetection(obj, ball)) {
             if(obj.element.style.backgroundColor === RED ){
                 obj.go.color = BLUE;
+                points ++;
             }else if(obj.element.style.backgroundColor === BLUE){
                 obj.go.color = YELLOW;
+                points ++;
             }else{
                 ArrayBlocks.splice(ArrayBlocks.indexOf(obj), 1);
                 obj.element.style.visibility = 'hidden';
+                points ++;
+                console.log(points);
+                if(ArrayBlocks.length == 0){
+                    ball_moving = false;
+                    document.getElementById('ganaste').style.visibility = 'visible';
+                }
             }
 
             let y_height = obj.go.y + obj.go.height;
@@ -290,6 +323,14 @@ const update = () => {
         let angle = (180 * distance_P_B) / player.go.width;
 
         //ponemos la nueva velocidad de nuestra pelota despues de chocar con nuestro player
+        console.log(calcVectorFromAngle(angle),angle);
+        
+        if(angle < 20){
+            angle = 20;
+        }else if(angle>160){
+            angle = 160;
+        }
+
         let newSpeedX = calcVectorFromAngle(angle).x * -1 * data.options.speedBall;
         let newSpeedY = calcVectorFromAngle(angle).y * -1 * data.options.speedBall;
         ball.go.speed.x = newSpeedX;
@@ -320,6 +361,13 @@ const update = () => {
     }
 
     document.getElementById('lifes').innerHTML = lifes;
+    document.getElementById('points').innerHTML = points;
+    console.log(max_p);
+    let elements = document.getElementsByClassName('maxPoints')
+    for(let i=0; i<elements.length; i++) {
+        elements[i].innerHTML = window.localStorage.getItem('maxPoints');
+    }
+    
 }
 
 const game = {
@@ -335,7 +383,9 @@ const game = {
         addGameZone,
         addBall,
         addBlocks,
-        restartAll
+        restartAll,
+        intructionsHidden,
+        winHidden
 
     }
 };
